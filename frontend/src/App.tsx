@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useRoutes } from "react-router-dom";
+import { Home, Details } from "./pages";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const routes = useRoutes([
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "/home",
+      element: <Home />,
+    },
+    {
+      path: "/details",
+      element: <Details />,
+    },
+  ]);
 
-  return (
-    <div className="App">
-      <p className="text-center text-xl">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  );
+  return routes;
 }
 
 export default App;
