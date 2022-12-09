@@ -1,5 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import { Home, Details } from "./pages";
+import { Home } from "./pages";
 
 function App() {
   const routes = useRoutes([
@@ -10,10 +10,6 @@ function App() {
     {
       path: "/home",
       element: <Home />,
-    },
-    {
-      path: "/details",
-      element: <Details />,
     },
   ]);
 
