@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactPaginate from "react-paginate";
 import { AnalysedListItem, Details } from "../components";
 
 interface HomeState {
@@ -8,6 +9,8 @@ interface HomeState {
   buttonCss: string;
   isDetailsOpen: boolean;
   selectedUrl: string;
+  pageNumber: number;
+  pageCount: number;
 }
 
 const buttonCssDict = {
@@ -24,6 +27,8 @@ export function Home() {
     buttonCss: buttonCssDict.disabled,
     isDetailsOpen: false,
     selectedUrl: "",
+    pageNumber: 0,
+    pageCount: 0,
   });
 
   function openDetailsPage(url: string) {
@@ -38,6 +43,7 @@ export function Home() {
     e.preventDefault();
     const { requestedUrls } = state;
     requestedUrls.push(state.url);
+    const pageCount = Math.ceil(requestedUrls.length / 3);
 
     setState({
       ...state,
@@ -45,6 +51,7 @@ export function Home() {
       url: "",
       buttonCss: buttonCssDict.disabled,
       buttonState: "disabled",
+      pageCount,
     });
   }
 
@@ -81,14 +88,16 @@ export function Home() {
     });
   }
 
-  function renderAnalysedUrls(): React.ReactNode {
-    const { requestedUrls } = state;
+  function renderAnalysedUrls(sliceStart: number): React.ReactNode {
+    let { requestedUrls } = state;
+    requestedUrls = requestedUrls.slice(sliceStart, sliceStart + 3);
     const urls = [];
 
     for (let i = 0; i < requestedUrls.length; i++) {
+      console.log(requestedUrls[i]);
       urls.push(
         <AnalysedListItem
-          key={i}
+          key={sliceStart + i}
           url={requestedUrls[i]}
           openDetailsPage={openDetailsPage}
         />
@@ -109,7 +118,7 @@ export function Home() {
           />
         ) : (
           // Search Page
-          <div className="px-6 py-4 mx-6">
+          <div className="px-6 py-4 mx-6 h-full flex flex-col">
             <div className="font-bold text-4xl mb-2 mt-8">Silverlight</div>
             <form action="" onSubmit={requestUrlAnalysis}>
               <div className="pt-5">
@@ -130,12 +139,36 @@ export function Home() {
                 Analyse
               </button>
             </form>
-            {state.requestedUrls.length > 0 ? (
-              <div className="pb-4">
-                <div className="mt-8 text-xl font-bold">Analysing Targets</div>
-                {renderAnalysedUrls()}
-              </div>
-            ) : null}
+
+            <div className="flex flex-col grow justify-between">
+              {state.requestedUrls.length > 0 ? (
+                <div className="pb-4">
+                  <div className="mt-8 text-xl font-bold">
+                    Analysing Targets
+                  </div>
+                  {renderAnalysedUrls(state.pageNumber * 3)}
+                </div>
+              ) : null}
+              {state.requestedUrls.length > 3 ? (
+                <ReactPaginate
+                  breakLabel={"..."}
+                  pageCount={state.pageCount}
+                  activeClassName={
+                    "font-bold bg-custom-bg w-fit px-2.5 py-1 mx-2"
+                  }
+                  pageClassName={"bg-custom-bg w-fit px-2.5 py-1 mx-2"}
+                  breakClassName={"bg-custom-bg w-fit px-2.5 py-1"}
+                  containerClassName={"flex justify-center mt-4"}
+                  previousLabel={""}
+                  nextLabel={""}
+                  pageRangeDisplayed={3}
+                  renderOnZeroPageCount={() => null}
+                  onPageChange={(event) => {
+                    setState({ ...state, pageNumber: event.selected });
+                  }}
+                />
+              ) : null}
+            </div>
           </div>
         )}
       </div>
