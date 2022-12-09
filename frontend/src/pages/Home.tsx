@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AnalysedListItem } from "../components";
+import { AnalysedListItem, Details } from "../components";
 
 interface HomeState {
   requestedUrls: Array<string>;
@@ -73,6 +73,14 @@ export function Home() {
     });
   }
 
+  function closeDetailsPage() {
+    setState({
+      ...state,
+      isDetailsOpen: false,
+      selectedUrl: "",
+    });
+  }
+
   function renderAnalysedUrls(): React.ReactNode {
     const { requestedUrls } = state;
     const urls = [];
@@ -95,7 +103,10 @@ export function Home() {
       <div className="w-1/3 h-4/5 rounded bg-white shadow-sm">
         {state.isDetailsOpen ? (
           // Details Page
-          <div>details page</div>
+          <Details
+            closeDetailsPage={closeDetailsPage}
+            url={state.selectedUrl}
+          />
         ) : (
           // Search Page
           <div className="px-6 py-4 mx-6">
