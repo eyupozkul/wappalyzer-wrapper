@@ -1,4 +1,4 @@
-import { Analysis } from "../models/analysis.model";
+import { Analysis } from "../../models/analysis.model";
 
 export interface DBInterface {
   init(): Promise<boolean>;

@@ -1,4 +1,4 @@
-import { DBInterface } from "../../interfaces";
+import { DBInterface } from "../../application/interfaces";
 import { Analysis } from "../../models";
 
 export class InMemoryDB implements DBInterface {
