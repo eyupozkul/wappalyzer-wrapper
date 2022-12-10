@@ -1,2 +1,1 @@
-export * from "./websocket.interface";
-export * from "./persistance.interface";
+export * from "./db.interface";
