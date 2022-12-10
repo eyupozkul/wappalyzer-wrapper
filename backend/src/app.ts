@@ -1,3 +1,3 @@
-import { InMemoryDB } from "./frameworks/persistance";
+import { InMemoryDB } from "./frameworks/db";
 
 const db = new InMemoryDB();
