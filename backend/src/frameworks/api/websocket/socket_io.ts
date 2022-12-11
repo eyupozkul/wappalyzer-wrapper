@@ -23,7 +23,9 @@ export class SocketIO implements WebsocketInterface {
   }
 
   registerEvents(): void {
-    this.io = new Server<WebsocketEventInterface>(SERVER_PORT, {});
+    this.io = new Server<WebsocketEventInterface>(SERVER_PORT, {
+      cors: { origin: "*" },
+    });
     this.io.on("connection", (socket) => {
       socket.on("analysisRequest", async (url) => {
         const status = await this.newAnalysis(url);
