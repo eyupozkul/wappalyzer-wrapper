@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { Socket } from "socket.io-client";
 import { AnalysedListItem, Details } from "../components";
 
 interface HomeState {
   requestedUrls: Array<string>;
+  requestedUrlsStatus: { [key: string]: boolean };
   url: string;
   buttonState: "enabled" | "disabled";
   buttonCss: string;
@@ -13,15 +15,27 @@ interface HomeState {
   pageCount: number;
 }
 
+interface HomeProps {
+  socket: Socket;
+}
+
+interface Analysis {
+  url: string;
+  status: string;
+  numberOfPages: number;
+  usedTechnologies: Array<string>;
+}
+
 const buttonCssDict = {
   enabled:
     "w-full rounded-md mt-6 p-2.5  font-bold bg-analyse-button-color text-white",
   disabled: "w-full rounded-md mt-6 p-2.5 font-bold text-white bg-gray-300",
 };
 
-export function Home() {
+export function Home({ socket }: HomeProps) {
   const [state, setState] = useState<HomeState>({
-    requestedUrls: Array<string>(),
+    requestedUrls: [],
+    requestedUrlsStatus: {},
     url: "",
     buttonState: "disabled",
     buttonCss: buttonCssDict.disabled,
@@ -29,6 +43,19 @@ export function Home() {
     selectedUrl: "",
     pageNumber: 0,
     pageCount: 0,
+  });
+
+  useEffect(() => {
+    socket.on("analysis", (analysis: Analysis) => {});
+
+    socket.on("analysisCompleted", (url: string) => {
+      const requestedUrlsStatus = state.requestedUrlsStatus;
+      requestedUrlsStatus[url] = true;
+      setState({
+        ...state,
+        requestedUrlsStatus,
+      });
+    });
   });
 
   function openDetailsPage(url: string) {
@@ -43,11 +70,16 @@ export function Home() {
     e.preventDefault();
     const { requestedUrls } = state;
     requestedUrls.push(state.url);
+
+    socket.emit("analysisRequest", state.url);
     const pageCount = Math.ceil(requestedUrls.length / 3);
+    const requestedUrlsStatus = state.requestedUrlsStatus;
+    requestedUrlsStatus[state.url] = false;
 
     setState({
       ...state,
       requestedUrls,
+      requestedUrlsStatus,
       url: "",
       buttonCss: buttonCssDict.disabled,
       buttonState: "disabled",
@@ -94,11 +126,11 @@ export function Home() {
     const urls = [];
 
     for (let i = 0; i < requestedUrls.length; i++) {
-      console.log(requestedUrls[i]);
       urls.push(
         <AnalysedListItem
           key={sliceStart + i}
           url={requestedUrls[i]}
+          analysisComplete={state.requestedUrlsStatus[requestedUrls[i]]}
           openDetailsPage={openDetailsPage}
         />
       );

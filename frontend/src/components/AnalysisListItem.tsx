@@ -1,22 +1,14 @@
-import { useState } from "react";
-
 interface AnalysedListItemProps {
   url: string;
   openDetailsPage: (url: string) => void;
-}
-
-interface AnalysedListItemState {
   analysisComplete: boolean;
 }
 
 export function AnalysedListItem({
   url,
   openDetailsPage,
+  analysisComplete,
 }: AnalysedListItemProps) {
-  const [state, setState] = useState<AnalysedListItemState>({
-    analysisComplete: true,
-  });
-
   return (
     <div className="bg-custom-bg my-3 py-2 px-2 flex justify-between">
       <a
@@ -27,7 +19,7 @@ export function AnalysedListItem({
         {url}
       </a>
       <div>
-        {state.analysisComplete ? (
+        {analysisComplete ? (
           <button
             className="text-blue-600 hover:text-blue-800"
             onClick={(e) => openDetailsPage(url)}
