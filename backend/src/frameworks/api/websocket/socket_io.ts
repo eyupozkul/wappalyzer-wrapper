@@ -40,4 +40,8 @@ export class SocketIO implements WebsocketInterface {
       });
     });
   }
+
+  close(): void {
+    this.io.close();
+  }
 }

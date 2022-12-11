@@ -11,4 +11,5 @@ export interface WebsocketEventInterface {
 
 export interface WebsocketInterface {
   registerEvents(): void;
+  close(): void;
 }

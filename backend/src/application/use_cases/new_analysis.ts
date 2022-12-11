@@ -15,7 +15,8 @@ export function makeNewAnalysis(
 
     try {
       // Check if analysis with the same url already exists
-      await dbConnection.getAnalysis(url);
+      const analysis = await dbConnection.getAnalysis(url);
+      // TODO: send analysis to client
       return true;
     } catch (error: unknown) {
       if (!(error instanceof Error)) return false;
