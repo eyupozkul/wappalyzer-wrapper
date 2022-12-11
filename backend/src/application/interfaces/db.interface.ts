@@ -6,7 +6,7 @@ export interface DBInterface {
   getAnalysis(url: string): Promise<Analysis>; // analysis or false
   updateAnalysis(
     url: string,
-    newStatus?: "pending" | "in-progress" | "completed",
+    newStatus?: "pending" | "completed",
     numberOfPages?: number,
     usedTechnologies?: string[]
   ): Promise<Analysis>;

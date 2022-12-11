@@ -2,7 +2,8 @@ import { DBInterface } from "../interfaces";
 import { NewAnalysisInterface } from "../interfaces/use_cases";
 
 export function makeNewAnalysis(
-  dbConnection: DBInterface
+  dbConnection: DBInterface,
+  wappalyzer: any
 ): NewAnalysisInterface {
   return async function newAnalysis(url: string): Promise<boolean> {
     // Validate URL
@@ -13,10 +14,10 @@ export function makeNewAnalysis(
       throw new Error("Invalid URL");
     }
 
+    console.time("analysis");
     try {
       // Check if analysis with the same url already exists
-      const analysis = await dbConnection.getAnalysis(url);
-      // TODO: send analysis to client
+      await dbConnection.getAnalysis(url);
       return true;
     } catch (error: unknown) {
       if (!(error instanceof Error)) return false;
@@ -25,7 +26,22 @@ export function makeNewAnalysis(
 
     const result = await dbConnection.saveAnalysisRequest(url);
 
-    // TODO: Make Wappalyzer Call
+    const site = await wappalyzer.open(url, {});
+    const results = await site.analyze();
+    const numberOfPages = Object.keys(results.urls).length;
+    const technologies = Array<string>();
+    results.technologies.forEach((tech: any) => {
+      technologies.push(tech.name);
+    });
+
+    await dbConnection.updateAnalysis(
+      url,
+      "completed",
+      numberOfPages,
+      technologies
+    );
+
+    console.timeEnd("analysis");
 
     return result;
   };
