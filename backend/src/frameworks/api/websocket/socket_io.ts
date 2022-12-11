@@ -3,17 +3,20 @@ import {
   WebsocketInterface,
   WebsocketEventInterface,
 } from "../../../application/interfaces";
+import {
+  GetAnalysisInterface,
+  NewAnalysisInterface,
+} from "../../../application/interfaces/use_cases";
 import { SERVER_PORT } from "../../../config";
-import { Analysis } from "../../../models";
 
 export class SocketIO implements WebsocketInterface {
   io: Server;
-  newAnalysis: (url: string) => Promise<number>;
-  getAnalysis: (id: number) => Promise<Analysis>;
+  newAnalysis: NewAnalysisInterface;
+  getAnalysis: GetAnalysisInterface;
 
   constructor(
-    newAnalysis: (url: string) => Promise<number>,
-    getAnalysis: (id: number) => Promise<Analysis>
+    newAnalysis: NewAnalysisInterface,
+    getAnalysis: GetAnalysisInterface
   ) {
     this.newAnalysis = newAnalysis;
     this.getAnalysis = getAnalysis;

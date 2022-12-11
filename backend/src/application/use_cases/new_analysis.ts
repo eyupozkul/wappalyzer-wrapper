@@ -1,6 +1,9 @@
 import { DBInterface } from "../interfaces";
+import { NewAnalysisInterface } from "../interfaces/use_cases";
 
-export function makeNewAnalysis(dbConnection: DBInterface) {
+export function makeNewAnalysis(
+  dbConnection: DBInterface
+): NewAnalysisInterface {
   return async function newAnalysis(url: string): Promise<boolean> {
     // Validate URL
     const urlExpression =

@@ -1,11 +1,12 @@
 import { describe, test, expect, beforeAll } from "@jest/globals";
 import { InMemoryDB } from "../../frameworks/db";
 import { DBInterface } from "../interfaces";
+import { NewAnalysisInterface } from "../interfaces/use_cases";
 import { makeNewAnalysis } from "./new_analysis";
 
 describe("Use Cases", () => {
   let dbConnection: DBInterface;
-  let newAnalysis: (url: string) => Promise<boolean>;
+  let newAnalysis: NewAnalysisInterface;
 
   beforeAll(async () => {
     dbConnection = new InMemoryDB();

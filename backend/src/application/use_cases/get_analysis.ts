@@ -1,7 +1,10 @@
 import { Analysis } from "../../models";
 import { DBInterface } from "../interfaces";
+import { GetAnalysisInterface } from "../interfaces/use_cases";
 
-export function makeGetAnalysis(dbConnection: DBInterface) {
+export function makeGetAnalysis(
+  dbConnection: DBInterface
+): GetAnalysisInterface {
   return async function getAnalysis(url: string): Promise<Analysis> {
     // Validate URL
     const urlExpression =
