@@ -44,7 +44,7 @@ npm run start    # Start production server
     │   └── use_cases     # Business logic of every use case
     ├── config            # Configuration files
     ├── frameworks        # Contains external frameworks/services used in the application
-    │   └── db            # Database connections are defines
+    │   └── db            # Database connections are defined
     └── models            # Database models
 
 ```
