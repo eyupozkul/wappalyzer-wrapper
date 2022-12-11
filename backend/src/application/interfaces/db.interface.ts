@@ -2,12 +2,12 @@ import { Analysis } from "../../models/analysis.model";
 
 export interface DBInterface {
   init(): Promise<boolean>;
-  saveAnalysisRequest(url: string): Promise<number>;
-  getAnalysis(id: number): Promise<Analysis | false>;
+  saveAnalysisRequest(url: string): Promise<boolean>; // success or failure
+  getAnalysis(url: string): Promise<Analysis>; // analysis or false
   updateAnalysis(
-    id: number,
+    url: string,
     newStatus?: "pending" | "in-progress" | "completed",
     numberOfPages?: number,
     usedTechnologies?: string[]
-  ): Promise<Analysis | false>;
+  ): Promise<Analysis>;
 }

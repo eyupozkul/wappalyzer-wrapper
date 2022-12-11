@@ -2,53 +2,52 @@ import { DBInterface } from "../../application/interfaces";
 import { Analysis } from "../../models";
 
 export class InMemoryDB implements DBInterface {
-  memory: { [key: number]: Analysis } = {};
+  // url -> analysis
+  memory: { [key: string]: Analysis } = {};
 
   init(): Promise<boolean> {
     this.memory = {};
     return new Promise((resolve) => resolve(true));
   }
 
-  saveAnalysisRequest(url: string): Promise<number> {
-    const newId = Object.keys(this.memory).length + 1;
+  saveAnalysisRequest(url: string): Promise<boolean> {
     const newAnalysis: Analysis = {
-      id: newId,
       url,
       status: "pending",
       numberOfPages: 0,
       usedTechnologies: [],
     };
 
-    this.memory[newId] = newAnalysis;
+    this.memory[url] = newAnalysis;
 
-    return new Promise((resolve) => resolve(newId));
+    return new Promise((resolve) => resolve(true));
   }
 
-  getAnalysis(id: number): Promise<Analysis | false> {
-    if (this.memory[id] === undefined) {
-      return new Promise((resolve) => resolve(false));
+  getAnalysis(url: string): Promise<Analysis> {
+    if (this.memory[url] === undefined) {
+      throw new Error("Analysis not found");
     }
 
-    return new Promise((resolve) => resolve(this.memory[id]));
+    return new Promise((resolve) => resolve(this.memory[url]));
   }
 
   updateAnalysis(
-    id: number,
+    url: string,
     newStatus?: "pending" | "in-progress" | "completed" | undefined,
     newNumberOfPages?: number | undefined,
     newUsedTechnologies?: string[] | undefined
-  ): Promise<Analysis | false> {
-    if (this.memory[id] === undefined) {
-      return new Promise((resolve) => resolve(false));
+  ): Promise<Analysis> {
+    if (this.memory[url] === undefined) {
+      throw new Error("Analysis not found");
     }
 
-    const analysis = this.memory[id];
+    const analysis = this.memory[url];
     analysis.status = newStatus || analysis.status;
     analysis.numberOfPages = newNumberOfPages || analysis.numberOfPages;
     analysis.usedTechnologies =
       newUsedTechnologies || analysis.usedTechnologies;
 
-    this.memory[id] = analysis;
+    this.memory[url] = analysis;
     return new Promise((resolve) => resolve(analysis));
   }
 }

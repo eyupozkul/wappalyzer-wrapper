@@ -1,45 +1,50 @@
-import { describe, test, expect } from "@jest/globals";
+import { describe, test, expect, beforeAll } from "@jest/globals";
 import { Analysis } from "../../models";
 import { InMemoryDB } from "./in_memory";
 
 const testDB = new InMemoryDB();
 
 describe("InMemoryDB Tests", () => {
+  let url: string;
+
+  beforeAll(() => {
+    url = "https://epctex.com";
+  });
+
   test("db init", async () => {
     const result = await testDB.init();
     expect(result).toBe(true);
   });
 
   test("save analysis request", async () => {
-    const url = "https://epctex.com";
-
     const result = await testDB.saveAnalysisRequest(url);
-    // first request in the db should have id 1
-    expect(result).toBe(1);
+    expect(result).toBe(true);
   });
 
-  test("get analysis with existing id", async () => {
-    const analysis = await testDB.getAnalysis(1);
-    expect(analysis).not.toBe(false);
-    expect((analysis as Analysis).url).toBe("https://epctex.com");
+  test("get analysis with existing url", async () => {
+    const analysis = await testDB.getAnalysis(url);
+    expect(analysis.url).toBe("https://epctex.com");
   });
 
-  test("get analysis with non-existing id", async () => {
-    const analysis = await testDB.getAnalysis(2);
-    expect(analysis).toBe(false);
+  test("get analysis with non-existing url", async () => {
+    await expect(
+      testDB.getAnalysis("https://non-existing-url.com")
+    ).rejects.toThrow("Analysis not found");
   });
 
   test("update analysis with existing id", async () => {
-    const analysis = await testDB.updateAnalysis(1, "completed", 1, ["React"]);
-    expect(analysis).not.toBe(false);
-    expect((analysis as Analysis).status).toEqual("completed");
-    expect((analysis as Analysis).numberOfPages).toEqual(1);
-    const usedTechnologies = (analysis as Analysis).usedTechnologies;
+    const analysis = await testDB.updateAnalysis(url, "completed", 1, [
+      "React",
+    ]);
+    expect(analysis.status).toEqual("completed");
+    expect(analysis.numberOfPages).toEqual(1);
+    const usedTechnologies = analysis.usedTechnologies;
     expect(usedTechnologies).toEqual(["React"]);
   });
 
   test("update analysis with non-existing id", async () => {
-    const analysis = await testDB.getAnalysis(2);
-    expect(analysis).toBe(false);
+    await expect(
+      testDB.getAnalysis("https://non-existing-url.com")
+    ).rejects.toThrow("Analysis not found");
   });
 });
