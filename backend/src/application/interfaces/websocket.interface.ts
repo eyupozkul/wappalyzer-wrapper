@@ -2,11 +2,11 @@ import { Analysis } from "../../models";
 
 export interface WebsocketEventInterface {
   // client -> server
-  analysisRequest: (url: string) => number;
-  getAnalysis: (id: number) => Analysis;
+  analysisRequest: (url: string) => boolean;
+  getAnalysis: (url: string) => Analysis;
 
   // server -> client
-  analysisCompleted: () => number;
+  analysisCompleted: () => string;
 }
 
 export interface WebsocketInterface {

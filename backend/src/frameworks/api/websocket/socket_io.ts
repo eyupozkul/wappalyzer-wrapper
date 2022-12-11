@@ -26,13 +26,17 @@ export class SocketIO implements WebsocketInterface {
     this.io = new Server<WebsocketEventInterface>(SERVER_PORT, {});
     this.io.on("connection", (socket) => {
       socket.on("analysisRequest", async (url) => {
-        const id = await this.newAnalysis(url);
-        socket.emit("analysisCompleted", id);
+        const status = await this.newAnalysis(url);
+        if (status) {
+          this.io.emit("analysisCompleted", url);
+        }
       });
 
-      socket.on("getAnalysis", (id) => {
-        const analysis = this.getAnalysis(id);
-        socket.emit("analysis", analysis);
+      socket.on("getAnalysis", async (url) => {
+        try {
+          const analysis = await this.getAnalysis(url);
+          socket.emit("analysis", analysis);
+        } catch (_: unknown) {}
       });
     });
   }
