@@ -19,13 +19,6 @@ interface HomeProps {
   socket: Socket;
 }
 
-interface Analysis {
-  url: string;
-  status: string;
-  numberOfPages: number;
-  usedTechnologies: Array<string>;
-}
-
 const buttonCssDict = {
   enabled:
     "w-full rounded-md mt-6 p-2.5  font-bold bg-analyse-button-color text-white",
@@ -46,8 +39,6 @@ export function Home({ socket }: HomeProps) {
   });
 
   useEffect(() => {
-    socket.on("analysis", (analysis: Analysis) => {});
-
     socket.on("analysisCompleted", (url: string) => {
       const requestedUrlsStatus = state.requestedUrlsStatus;
       requestedUrlsStatus[url] = true;
@@ -145,6 +136,7 @@ export function Home({ socket }: HomeProps) {
         {state.isDetailsOpen ? (
           // Details Page
           <Details
+            socket={socket}
             closeDetailsPage={closeDetailsPage}
             url={state.selectedUrl}
           />
