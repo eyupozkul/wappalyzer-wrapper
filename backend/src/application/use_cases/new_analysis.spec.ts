@@ -5,7 +5,7 @@ import { makeNewAnalysis } from "./new_analysis";
 
 describe("Use Cases", () => {
   let dbConnection: DBInterface;
-  let newAnalysis: (url: string) => Promise<number>;
+  let newAnalysis: (url: string) => Promise<boolean>;
 
   beforeAll(async () => {
     dbConnection = new InMemoryDB();
@@ -15,8 +15,13 @@ describe("Use Cases", () => {
   });
 
   test("new analysis", async () => {
-    const id = await newAnalysis("https://example.com");
-    expect(id).toBe(1);
+    const result = await newAnalysis("https://example.com");
+    expect(result).toBe(true);
+  });
+
+  test("new analysis with existing URL", async () => {
+    const result = await newAnalysis("https://example.com");
+    expect(result).toBe(true);
   });
 
   test("new analysis with invalid URL", async () => {

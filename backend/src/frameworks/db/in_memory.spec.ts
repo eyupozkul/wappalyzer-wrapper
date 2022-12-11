@@ -27,12 +27,12 @@ describe("InMemoryDB Tests", () => {
   });
 
   test("get analysis with non-existing url", async () => {
-    await expect(
-      testDB.getAnalysis("https://non-existing-url.com")
-    ).rejects.toThrow("Analysis not found");
+    await expect(testDB.getAnalysis("https://example.com")).rejects.toThrow(
+      "Analysis not found"
+    );
   });
 
-  test("update analysis with existing id", async () => {
+  test("update analysis with existing url", async () => {
     const analysis = await testDB.updateAnalysis(url, "completed", 1, [
       "React",
     ]);
@@ -42,9 +42,9 @@ describe("InMemoryDB Tests", () => {
     expect(usedTechnologies).toEqual(["React"]);
   });
 
-  test("update analysis with non-existing id", async () => {
+  test("update analysis with non-existing url", async () => {
     await expect(
-      testDB.getAnalysis("https://non-existing-url.com")
+      testDB.updateAnalysis("https://example.com", "completed", 1, ["React"])
     ).rejects.toThrow("Analysis not found");
   });
 });

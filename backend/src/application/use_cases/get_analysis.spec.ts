@@ -6,8 +6,8 @@ import { DBInterface } from "../interfaces";
 
 describe("Use Cases", () => {
   let dbConnection: DBInterface;
-  let getAnalysis: (id: number) => Promise<Analysis>;
-  let newAnalysis: (url: string) => Promise<number>;
+  let getAnalysis: (url: string) => Promise<Analysis>;
+  let newAnalysis: (url: string) => Promise<boolean>;
 
   beforeAll(async () => {
     dbConnection = new InMemoryDB();
@@ -21,17 +21,18 @@ describe("Use Cases", () => {
     // first analysis, id is 1
     await newAnalysis("https://example.com");
 
-    const analysis = await getAnalysis(1);
+    const analysis = await getAnalysis("https://example.com");
 
-    expect(analysis.id).toBe(1);
     expect(analysis.url).toBe("https://example.com");
   });
 
-  test("get analysis with invalid id", async () => {
-    await expect(getAnalysis(-2)).rejects.toThrow("Invalid ID");
+  test("get analysis with invalid url", async () => {
+    await expect(getAnalysis("invalid-url")).rejects.toThrow("Invalid URL");
   });
 
-  test("get analysis with non-existent id", async () => {
-    await expect(getAnalysis(2)).rejects.toThrow("Analysis not found");
+  test("get analysis with non-existent url", async () => {
+    await expect(getAnalysis("https://non-existing-url.com")).rejects.toThrow(
+      "Analysis not found"
+    );
   });
 });

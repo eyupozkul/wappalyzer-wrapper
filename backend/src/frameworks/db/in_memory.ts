@@ -3,14 +3,14 @@ import { Analysis } from "../../models";
 
 export class InMemoryDB implements DBInterface {
   // url -> analysis
-  memory: { [key: string]: Analysis } = {};
+  memory: { [key: string]: Analysis };
 
   init(): Promise<boolean> {
     this.memory = {};
     return new Promise((resolve) => resolve(true));
   }
 
-  saveAnalysisRequest(url: string): Promise<boolean> {
+  async saveAnalysisRequest(url: string): Promise<boolean> {
     const newAnalysis: Analysis = {
       url,
       status: "pending",
@@ -20,18 +20,18 @@ export class InMemoryDB implements DBInterface {
 
     this.memory[url] = newAnalysis;
 
-    return new Promise((resolve) => resolve(true));
+    return true;
   }
 
-  getAnalysis(url: string): Promise<Analysis> {
+  async getAnalysis(url: string): Promise<Analysis> {
     if (this.memory[url] === undefined) {
       throw new Error("Analysis not found");
     }
 
-    return new Promise((resolve) => resolve(this.memory[url]));
+    return this.memory[url];
   }
 
-  updateAnalysis(
+  async updateAnalysis(
     url: string,
     newStatus?: "pending" | "in-progress" | "completed" | undefined,
     newNumberOfPages?: number | undefined,
@@ -48,6 +48,6 @@ export class InMemoryDB implements DBInterface {
       newUsedTechnologies || analysis.usedTechnologies;
 
     this.memory[url] = analysis;
-    return new Promise((resolve) => resolve(analysis));
+    return analysis;
   }
 }
