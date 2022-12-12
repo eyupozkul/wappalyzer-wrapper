@@ -39,6 +39,7 @@ export function Home({ socket }: HomeProps) {
   };
 
   useEffect(() => {
+    console.log(import.meta.env.PROD);
     socket.on("connect", () => {
       setState({
         ...state,

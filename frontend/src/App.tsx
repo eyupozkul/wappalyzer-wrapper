@@ -1,9 +1,9 @@
 import { useRoutes } from "react-router-dom";
 import { Home } from "./pages";
 import socketIO from "socket.io-client";
+import { BACKEND_HOST, BACKEND_PORT } from "./config";
 
-// TODO: Read port from config
-const socket = socketIO("http://localhost:4174");
+const socket = socketIO(`http://${BACKEND_HOST}:${BACKEND_PORT}`);
 
 function App() {
   const routes = useRoutes([
