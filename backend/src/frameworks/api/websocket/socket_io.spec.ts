@@ -15,6 +15,7 @@ import { InMemoryDB } from "../../db";
 import { SocketIO } from "./socket_io";
 import Client from "socket.io-client";
 import { SERVER_PORT } from "../../../config";
+import { WappalyzerMock } from "../../../mocks";
 
 describe("Socket.io tests", () => {
   let serverSocket: WebsocketInterface;
@@ -24,10 +25,13 @@ describe("Socket.io tests", () => {
   let newAnalysis: NewAnalysisInterface;
   let getAnalysis: GetAnalysisInterface;
 
+  let wappalyzerMock: WappalyzerMock;
+
   beforeAll(async () => {
     dbConnection = new InMemoryDB();
+    wappalyzerMock = new WappalyzerMock();
     await dbConnection.init();
-    newAnalysis = makeNewAnalysis(dbConnection);
+    newAnalysis = makeNewAnalysis(dbConnection, wappalyzerMock);
     getAnalysis = makeGetAnalysis(dbConnection);
 
     serverSocket = new SocketIO(newAnalysis, getAnalysis);

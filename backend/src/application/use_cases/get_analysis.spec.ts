@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeAll } from "@jest/globals";
 import { makeGetAnalysis, makeNewAnalysis } from ".";
 import { InMemoryDB } from "../../frameworks/db";
+import { WappalyzerMock } from "../../mocks";
 import { DBInterface } from "../interfaces";
 import {
   GetAnalysisInterface,
@@ -11,12 +12,14 @@ describe("Use Cases", () => {
   let dbConnection: DBInterface;
   let getAnalysis: GetAnalysisInterface;
   let newAnalysis: NewAnalysisInterface;
+  let wappalyzerMock: WappalyzerMock;
 
   beforeAll(async () => {
     dbConnection = new InMemoryDB();
+    wappalyzerMock = new WappalyzerMock();
     await dbConnection.init();
 
-    newAnalysis = makeNewAnalysis(dbConnection);
+    newAnalysis = makeNewAnalysis(dbConnection, wappalyzerMock);
     getAnalysis = makeGetAnalysis(dbConnection);
   });
 
