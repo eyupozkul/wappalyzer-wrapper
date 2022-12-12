@@ -8,22 +8,16 @@ interface HomeState {
   requestedUrlsStatus: { [key: string]: boolean };
   url: string;
   buttonState: "enabled" | "disabled";
-  buttonCss: string;
   isDetailsOpen: boolean;
   selectedUrl: string;
   pageNumber: number;
   pageCount: number;
+  backendStatus: boolean;
 }
 
 interface HomeProps {
   socket: Socket;
 }
-
-const buttonCssDict = {
-  enabled:
-    "w-full rounded-md mt-6 p-2.5  font-bold bg-analyse-button-color text-white",
-  disabled: "w-full rounded-md mt-6 p-2.5 font-bold text-white bg-gray-300",
-};
 
 export function Home({ socket }: HomeProps) {
   const [state, setState] = useState<HomeState>({
@@ -31,14 +25,34 @@ export function Home({ socket }: HomeProps) {
     requestedUrlsStatus: {},
     url: "",
     buttonState: "disabled",
-    buttonCss: buttonCssDict.disabled,
     isDetailsOpen: false,
     selectedUrl: "",
     pageNumber: 0,
     pageCount: 0,
+    backendStatus: false,
   });
 
+  const buttonCss = {
+    enabled:
+      "w-full rounded-md mt-6 p-2.5  font-bold bg-analyse-button-color text-white",
+    disabled: "w-full rounded-md mt-6 p-2.5 font-bold text-white bg-gray-300",
+  };
+
   useEffect(() => {
+    socket.on("connect", () => {
+      setState({
+        ...state,
+        backendStatus: true,
+      });
+    });
+
+    socket.on("disconnect", () => {
+      setState({
+        ...state,
+        backendStatus: false,
+      });
+    });
+
     socket.on("analysisCompleted", (url: string) => {
       const requestedUrlsStatus = state.requestedUrlsStatus;
       requestedUrlsStatus[url] = true;
@@ -72,7 +86,6 @@ export function Home({ socket }: HomeProps) {
       requestedUrls,
       requestedUrlsStatus,
       url: "",
-      buttonCss: buttonCssDict.disabled,
       buttonState: "disabled",
       pageCount,
     });
@@ -80,7 +93,7 @@ export function Home({ socket }: HomeProps) {
 
   function handleUrlChange(e: React.FormEvent<EventTarget>) {
     const target = e.target as HTMLInputElement;
-    let { url, buttonState, buttonCss } = state;
+    let { url, buttonState } = state;
     url = target.value;
 
     // check if the url is valid
@@ -89,17 +102,14 @@ export function Home({ socket }: HomeProps) {
     const urlRegex = new RegExp(urlExpression);
     if (urlRegex.test(url)) {
       buttonState = "enabled";
-      buttonCss = buttonCssDict.enabled;
     } else {
       buttonState = "disabled";
-      buttonCss = buttonCssDict.disabled;
     }
 
     setState({
       ...state,
       url,
       buttonState,
-      buttonCss,
     });
   }
 
@@ -143,7 +153,12 @@ export function Home({ socket }: HomeProps) {
         ) : (
           // Search Page
           <div className="px-6 py-4 mx-6 h-full flex flex-col">
-            <div className="font-bold text-4xl mb-2 mt-8">Silverlight</div>
+            <div className="flex flex-row justify-between">
+              <div className="font-bold text-4xl mb-2 mt-8">Silverlight</div>
+              <div className="text-sm font-bold">
+                Server status: {state.backendStatus ? "✅" : "❌"}
+              </div>
+            </div>
             <form action="" onSubmit={requestUrlAnalysis}>
               <div className="pt-5">
                 <input
@@ -156,9 +171,15 @@ export function Home({ socket }: HomeProps) {
                 />
               </div>
               <button
-                disabled={state.buttonState === "disabled"}
+                disabled={
+                  state.buttonState === "disabled" || !state.backendStatus
+                }
                 type="submit"
-                className={state.buttonCss}
+                className={
+                  state.buttonState === "enabled" && state.backendStatus
+                    ? buttonCss.enabled
+                    : buttonCss.disabled
+                }
               >
                 Analyse
               </button>
