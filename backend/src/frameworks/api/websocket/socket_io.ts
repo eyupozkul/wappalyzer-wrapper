@@ -30,7 +30,10 @@ export class SocketIO implements WebsocketInterface {
       socket.on("analysisRequest", async (url) => {
         const status = await this.newAnalysis(url);
         if (status) {
+          // Send analysisCompleted event to every client
           this.io.emit("analysisCompleted", url);
+        } else {
+          // TODO: Send error message to client
         }
       });
 

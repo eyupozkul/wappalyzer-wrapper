@@ -14,17 +14,24 @@ export function makeNewAnalysis(
       throw new Error("Invalid URL");
     }
 
-    console.time("analysis");
     try {
       // Check if analysis with the same url already exists
-      await dbConnection.getAnalysis(url);
-      return true;
+      const analysis = await dbConnection.getAnalysis(url);
+      if (analysis.status === "completed") {
+        // Send analysisCompleted event to clients
+        return true;
+      } else if (analysis.status === "pending") {
+        // Same analysis has already been requested, return false indicating that the analysis was not created
+        return false;
+      }
     } catch (error: unknown) {
+      // We don't know what went wrong, return false indicating that the analysis was not created
       if (!(error instanceof Error)) return false;
       if (error.message !== "Analysis not found") return false;
     }
 
     const result = await dbConnection.saveAnalysisRequest(url);
+    if (!result) return false;
 
     const site = await wappalyzer.open(url, {});
     const results = await site.analyze();
@@ -41,8 +48,7 @@ export function makeNewAnalysis(
       technologies
     );
 
-    console.timeEnd("analysis");
-
-    return result;
+    // Analysis successfully created, send analysisCompleted event to clients
+    return true;
   };
 }
