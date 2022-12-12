@@ -74,7 +74,10 @@ export function Home({ socket }: HomeProps) {
   function requestUrlAnalysis(e: React.FormEvent<EventTarget>) {
     e.preventDefault();
     const { requestedUrls } = state;
-    requestedUrls.push(state.url);
+    // Do not show the same url twice
+    if (!requestedUrls.includes(state.url)) {
+      requestedUrls.push(state.url);
+    }
 
     socket.emit("analysisRequest", state.url);
     const pageCount = Math.ceil(requestedUrls.length / 3);
