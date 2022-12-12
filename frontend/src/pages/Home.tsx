@@ -132,7 +132,7 @@ export function Home({ socket }: HomeProps) {
 
   return (
     <div className="min-h-screen bg-custom-bg relative grid place-items-center">
-      <div className="w-1/3 h-4/5 rounded bg-white shadow-sm">
+      <div className="w-4/5 lg:w-2/3 2xl:w-1/2 h-4/5 rounded bg-white shadow-sm">
         {state.isDetailsOpen ? (
           // Details Page
           <Details
