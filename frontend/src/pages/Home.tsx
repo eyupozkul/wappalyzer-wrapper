@@ -202,10 +202,10 @@ export function Home({ socket }: HomeProps) {
                 <ReactPaginate
                   breakLabel={"..."}
                   pageCount={state.pageCount}
-                  activeClassName={
+                  activeLinkClassName={
                     "font-bold bg-custom-bg w-fit px-2.5 py-1 mx-2"
                   }
-                  pageClassName={"bg-custom-bg w-fit px-2.5 py-1 mx-2"}
+                  pageLinkClassName={"bg-custom-bg w-fit px-2.5 py-1 mx-2"}
                   breakClassName={"bg-custom-bg w-fit px-2.5 py-1"}
                   containerClassName={"flex justify-center mt-4"}
                   previousLabel={""}
