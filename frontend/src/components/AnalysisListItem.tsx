@@ -4,7 +4,7 @@ interface AnalysedListItemProps {
   analysisComplete: boolean;
 }
 
-export function AnalysedListItem({
+export function AnalysisListItem({
   url,
   openDetailsPage,
   analysisComplete,

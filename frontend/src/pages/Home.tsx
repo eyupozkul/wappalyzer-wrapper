@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Socket } from "socket.io-client";
-import { AnalysedListItem, Details } from "../components";
+import { AnalysisListItem, Details } from "../components";
+import { urlValidator } from "../utils";
 
 interface HomeState {
   requestedUrls: Array<string>;
@@ -99,15 +100,10 @@ export function Home({ socket }: HomeProps) {
     let { url, buttonState } = state;
     url = url = target.value;
 
-    // check if the url is valid
-    const urlExpression =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
-    const urlRegex = new RegExp(urlExpression);
-    const matches = url.match(urlRegex);
-
-    // there is a match and it is the only match
-    if (matches && matches.length === 1 && matches[0] === url) {
+    if (urlValidator(url)) {
       buttonState = "enabled";
+    } else {
+      buttonState = "disabled";
     }
 
     setState({
@@ -132,7 +128,7 @@ export function Home({ socket }: HomeProps) {
 
     for (let i = 0; i < requestedUrls.length; i++) {
       urls.push(
-        <AnalysedListItem
+        <AnalysisListItem
           key={sliceStart + i}
           url={requestedUrls[i]}
           analysisComplete={state.requestedUrlsStatus[requestedUrls[i]]}
@@ -158,7 +154,9 @@ export function Home({ socket }: HomeProps) {
           // Search Page
           <div className="px-6 py-4 mx-6 h-full flex flex-col">
             <div className="flex flex-row justify-between">
-              <div className="font-bold text-4xl mb-2 mt-8">Silverlight</div>
+              <div id="main_title" className="font-bold text-4xl mb-2 mt-8">
+                Silverlight
+              </div>
               <div className="text-sm font-bold">
                 Server status: {state.backendStatus ? "✅" : "❌"}
               </div>
@@ -167,7 +165,7 @@ export function Home({ socket }: HomeProps) {
               <div className="pt-5">
                 <input
                   type="text"
-                  id="url"
+                  id="url_input"
                   className="bg-white border-2 border-url-input-border  text-xl rounded-md  block w-full p-2.5 outline-none"
                   placeholder="URL want to be checked"
                   value={state.url}
