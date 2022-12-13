@@ -1,5 +1,6 @@
 import { DBInterface } from "../interfaces";
 import { NewAnalysisInterface } from "../interfaces/use_cases";
+import { urlValidator } from "../../utils";
 
 export function makeNewAnalysis(
   dbConnection: DBInterface,
@@ -7,10 +8,7 @@ export function makeNewAnalysis(
 ): NewAnalysisInterface {
   return async function newAnalysis(url: string): Promise<boolean> {
     // Validate URL
-    const urlExpression =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-    const urlRegex = new RegExp(urlExpression);
-    if (!urlRegex.test(url)) {
+    if (!urlValidator(url)) {
       throw new Error("Invalid URL");
     }
 
@@ -33,20 +31,24 @@ export function makeNewAnalysis(
     const result = await dbConnection.saveAnalysisRequest(url);
     if (!result) return false;
 
-    const site = await wappalyzer.open(url, {});
-    const results = await site.analyze();
-    const numberOfPages = Object.keys(results.urls).length;
-    const technologies = Array<string>();
-    results.technologies.forEach((tech: any) => {
-      technologies.push(tech.name);
-    });
+    try {
+      const site = await wappalyzer.open(url, {});
+      const results = await site.analyze();
+      const numberOfPages = Object.keys(results.urls).length;
+      const technologies = Array<string>();
+      results.technologies.forEach((tech: any) => {
+        technologies.push(tech.name);
+      });
 
-    await dbConnection.updateAnalysis(
-      url,
-      "completed",
-      numberOfPages,
-      technologies
-    );
+      await dbConnection.updateAnalysis(
+        url,
+        "completed",
+        numberOfPages,
+        technologies
+      );
+    } catch (_) {
+      await dbConnection.updateAnalysis(url, "completed", 0, []);
+    }
 
     // Analysis successfully created, send analysisCompleted event to clients
     return true;

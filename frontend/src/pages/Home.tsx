@@ -39,7 +39,6 @@ export function Home({ socket }: HomeProps) {
   };
 
   useEffect(() => {
-    console.log(import.meta.env.PROD);
     socket.on("connect", () => {
       setState({
         ...state,
@@ -98,16 +97,17 @@ export function Home({ socket }: HomeProps) {
   function handleUrlChange(e: React.FormEvent<EventTarget>) {
     const target = e.target as HTMLInputElement;
     let { url, buttonState } = state;
-    url = target.value;
+    url = url = target.value;
 
     // check if the url is valid
     const urlExpression =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
     const urlRegex = new RegExp(urlExpression);
-    if (urlRegex.test(url)) {
+    const matches = url.match(urlRegex);
+
+    // there is a match and it is the only match
+    if (matches && matches.length === 1 && matches[0] === url) {
       buttonState = "enabled";
-    } else {
-      buttonState = "disabled";
     }
 
     setState({
