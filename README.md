@@ -1,4 +1,4 @@
-## Epctex Assignment
+## Wappalayzer Wrapper
 
 ### Run the project
 
