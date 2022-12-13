@@ -1,6 +1,6 @@
 ## Wappalayzer Wrapper
 
-### Run the project
+### Quick Start
 
 ---
 
@@ -12,6 +12,7 @@ git clone https://github.com/eyupozkul/wappalyzer-wrapper
 # Change directory
 cd wappalyzer-wrapper
 # Run both backend/frontend (should take a few minutes)
+# NOTE: Ports 4173 and 4174 are used by the backend and frontend respectively
 docker compose up
 
 # If you changed the code, you can run the following command to rebuild the images
