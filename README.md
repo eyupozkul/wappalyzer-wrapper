@@ -7,6 +7,10 @@
 #### Docker - Recommended
 
 ```bash
+# Clone the repository
+git clone https://github.com/eyupozkul/wappalyzer-wrapper
+# Change directory
+cd wappalyzer-wrapper
 # Run both backend/frontend (should take a few minutes)
 docker compose up
 
