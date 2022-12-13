@@ -49,5 +49,6 @@ npm run start    # Start production server
     │   │   └── websocket     # Websocket API framework is defined
     │   └── db                # Database frameworks/services are defined
     ├── mocks                 # Mocks for testing
-    └── models                # Database models
+    ├── models                # Database models
+    └── utils                 # Utility functions
 ```

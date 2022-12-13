@@ -6,16 +6,19 @@
 
 #### Docker - Recommended
 
-````bash
-
 ```bash
-# Run both backend/frontend
+# Run both backend/frontend (should take a few minutes)
 docker compose up
 
 # If you changed the code, you can run the following command to rebuild the images
-# TODO: Add the command
-````
+docker compose build --no-cache
+docker compose up
+```
 
 #### Run Individual Service
 
-You can also run the backend and frontend separately. Read more about it in the README.md of each service.
+You can also run the backend and frontend separately. For more information.
+
+- [Backend](backend/README.md)
+
+- [Frontend](frontend/README.md)

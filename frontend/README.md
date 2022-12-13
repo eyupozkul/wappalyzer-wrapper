@@ -15,6 +15,14 @@ npm install      # Install dependencies
 npm run dev      # Start development server with hot-reload
 ```
 
+## Run tests
+
+---
+
+```bash
+npm run test     # Run tests
+```
+
 ## Production
 
 ---
@@ -30,9 +38,11 @@ npm run preview    # Start production server
 
 ```bash
 .
-├── public              # Public files
-└── src
-    ├── components      # Re-usable components
-    ├── config          # Configuration files
-    └── pages           # Pages
+├── public             # Public files
+├── src
+│   ├── components     # Re-usable components
+│   ├── config         # Configuration files
+│   ├── pages          # Pages
+│   └── utils          # Utility functions
+└── tests              # Vitest setup
 ```
